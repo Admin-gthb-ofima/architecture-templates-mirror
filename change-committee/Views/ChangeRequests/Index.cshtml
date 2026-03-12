@@ -1,0 +1,53 @@
+@model change_committee.ViewModels.ChangeRequests.ChangeRequestListViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Solicitudes de Cambio</h1>
+        <p>Gestione el ciclo completo de solicitudes: crear, editar, revisar y eliminar.</p>
+    </div>
+    <a asp-action="Create" class="btn-primary"><i class="bi bi-plus-circle-fill"></i> Nueva Solicitud</a>
+</section>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Radicado</th>
+                    <th>Proyecto</th>
+                    <th>Solicitante</th>
+                    <th>Tipo</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@item.TicketNumber</strong></td>
+                        <td>@item.ProjectName</td>
+                        <td>@item.ApplicantName</td>
+                        <td>@item.RequestType</td>
+                        <td><span class="badge @item.Priority.ToLowerInvariant()">@item.Priority</span></td>
+                        <td><span class="badge @item.Status.ToLowerInvariant()">@item.Status.Replace("_", " ")</span></td>
+                        <td>@item.CreatedAt</td>
+                        <td>
+                            <div class="inline-actions">
+                                <a asp-action="Track" asp-route-id="@item.Id" class="icon-link" title="Ver"><i class="bi bi-eye-fill"></i></a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="icon-link" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Desea eliminar esta solicitud?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="icon-link danger" title="Eliminar"><i class="bi bi-trash-fill"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <footer class="panel-footer">Total de solicitudes: @Model.Total</footer>
+</section>

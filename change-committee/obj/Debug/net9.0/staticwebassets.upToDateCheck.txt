@@ -1,0 +1,4 @@
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\change-committee\wwwroot\js\site.js
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\change-committee\wwwroot\css\site.css
+wwwroot\css\site.css
+wwwroot\js\site.js

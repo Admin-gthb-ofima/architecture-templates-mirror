@@ -1,0 +1,33 @@
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\bin\Debug\net9.0\Domain.dll
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\bin\Debug\net9.0\Domain.pdb
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.dll
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\Domain.pdb
+D:\Projects dev\Template-Pasarelas de pago\change-committee\Domain\obj\Debug\net9.0\ref\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\bin\Debug\net9.0\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\bin\Debug\net9.0\Domain.pdb
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\Domain.pdb
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture templates\Domain\obj\Debug\net9.0\ref\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\bin\Debug\net9.0\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\bin\Debug\net9.0\Domain.pdb
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\Domain.pdb
+D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\Domain\obj\Debug\net9.0\ref\Domain.dll

@@ -1,0 +1,73 @@
+@model change_committee.ViewModels.Dashboard.DashboardViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Dashboard de Solicitudes</h1>
+        <p>Gestion y monitoreo estrategico de cambios organizacionales.</p>
+    </div>
+    <a asp-controller="ChangeRequests" asp-action="Create" class="btn-primary"><i class="bi bi-plus-circle-fill"></i> Nueva Solicitud</a>
+</section>
+
+<section class="kpi-grid four">
+    <article class="kpi-card">
+        <div class="kpi-icon sky"><i class="bi bi-bar-chart-fill"></i></div>
+        <span>Total Requests</span>
+        <h3>@Model.TotalRequests.ToString("N0")</h3>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-icon amber"><i class="bi bi-hourglass-split"></i></div>
+        <span>Pending Approval</span>
+        <h3>@Model.PendingApproval</h3>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-icon green"><i class="bi bi-patch-check-fill"></i></div>
+        <span>Approved</span>
+        <h3>@Model.Approved</h3>
+    </article>
+    <article class="kpi-card">
+        <div class="kpi-icon rose"><i class="bi bi-x-octagon-fill"></i></div>
+        <span>Rejected</span>
+        <h3>@Model.Rejected</h3>
+    </article>
+</section>
+
+<section class="panel">
+    <header class="panel-header">
+        <h2>Detalle de Solicitudes</h2>
+        <div class="panel-actions">
+            <button type="button" class="btn-outline"><i class="bi bi-funnel"></i> Filtrar</button>
+            <button type="button" class="btn-outline"><i class="bi bi-download"></i> Exportar</button>
+        </div>
+    </header>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Solicitante</th>
+                    <th>Proyecto</th>
+                    <th>Cargo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RecentRequests)
+                {
+                    <tr>
+                        <td>@item.CreatedDate</td>
+                        <td>@item.ApplicantName</td>
+                        <td>@item.ProjectName</td>
+                        <td>@item.Position</td>
+                        <td><span class="badge @item.Status.ToLowerInvariant()">@item.Status.Replace("_", " ")</span></td>
+                        <td>
+                            <a asp-controller="ChangeRequests" asp-action="Track" asp-route-id="@item.Id" class="icon-link" title="Ver"><i class="bi bi-eye-fill"></i></a>
+                            <a asp-controller="ChangeRequests" asp-action="Edit" asp-route-id="@item.Id" class="icon-link" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

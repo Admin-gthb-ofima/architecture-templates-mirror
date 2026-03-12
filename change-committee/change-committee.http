@@ -1,0 +1,6 @@
+@change_committee_HostAddress = http://localhost:5125
+
+GET {{change_committee_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

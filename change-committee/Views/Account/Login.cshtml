@@ -1,0 +1,56 @@
+@model change_committee.ViewModels.Account.LoginViewModel
+@{
+    Layout = "_AuthLayout";
+}
+
+<section class="auth-wrapper">
+    <div class="auth-card">
+        <article class="auth-hero">
+            <div class="auth-hero-overlay"></div>
+            <div class="auth-logo">ChangeFlow</div>
+            <div class="auth-message">
+                <h1>Gestion eficiente de cambios tecnologicos.</h1>
+                <p>Optimiza la trazabilidad, aprobacion y ejecucion de cambios en infraestructura critica.</p>
+            </div>
+            <div class="auth-dots"><span></span><span></span><span></span></div>
+        </article>
+
+        <article class="auth-form-panel">
+            <h2>Bienvenido</h2>
+            <p class="sub">Seleccione su metodo de acceso al portal.</p>
+
+            <button class="btn-outline full" type="button"><i class="bi bi-building"></i> Ingresar con Correo Corporativo</button>
+
+            <div class="separator"><span>O BIEN</span></div>
+
+            <h3>Acceso para Comite</h3>
+
+            <form asp-controller="Account" asp-action="Login" method="post" class="auth-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="field-error"></div>
+
+                <label asp-for="Email">Correo Electronico</label>
+                <input asp-for="Email" placeholder="dmartinez@ofima.com" />
+                <span asp-validation-for="Email" class="field-error"></span>
+
+                <label asp-for="Password">Contrasena</label>
+                <input asp-for="Password" placeholder="********" />
+                <span asp-validation-for="Password" class="field-error"></span>
+
+                <div class="inline-row">
+                    <label class="remember-check"><input asp-for="RememberMe" /> Recordarme</label>
+                    <a href="#">Olvido su clave?</a>
+                </div>
+
+                <button type="submit" class="btn-primary full">Iniciar Sesion</button>
+            </form>
+
+            <p class="auth-footer">Usuario inicial: <strong>dmartinez@ofima.com</strong> | Clave: <strong>123456789</strong></p>
+        </article>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,86 @@
+@model change_committee.ViewModels.ChangeRequests.CreateChangeRequestViewModel
+@{
+    Layout = "_PortalLayout";
+}
+
+<section class="form-header">
+    <h1>Formulario de Solicitud de Cambio</h1>
+    <p>Inicie un nuevo proceso de gestion de cambios completando la informacion detallada.</p>
+</section>
+
+<section class="form-card">
+    <header><i class="bi bi-clipboard2-check-fill"></i> Detalles de la Solicitud</header>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="request-form">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="field-error"></div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="ProjectId">Nombre del Proyecto</label>
+                <select asp-for="ProjectId" asp-items="Model.Projects">
+                    <option value="">Seleccione un proyecto</option>
+                </select>
+                <span asp-validation-for="ProjectId" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="ApplicantId">Solicitante</label>
+                <select asp-for="ApplicantId" asp-items="Model.Applicants">
+                    <option value="">Seleccione el solicitante</option>
+                </select>
+                <span asp-validation-for="ApplicantId" class="field-error"></span>
+            </div>
+        </div>
+
+        <div>
+            <label asp-for="RequestType">Tipo de Solicitud</label>
+            <select asp-for="RequestType">
+                <option value="">Seleccione el tipo de solicitud</option>
+                <option>Infraestructura Critica</option>
+                <option>Cambio Aplicativo</option>
+                <option>Ajuste de Seguridad</option>
+                <option>Solicitud Operativa</option>
+            </select>
+            <span asp-validation-for="RequestType" class="field-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="Priority">Prioridad</label>
+            <select asp-for="Priority">
+                <option value="BAJA">Baja</option>
+                <option value="MEDIA">Media</option>
+                <option value="ALTA">Alta</option>
+            </select>
+            <span asp-validation-for="Priority" class="field-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="Description">Descripcion de Solicitud</label>
+            <textarea asp-for="Description" rows="5" placeholder="Describa detalladamente el cambio solicitado y su justificacion..."></textarea>
+            <span asp-validation-for="Description" class="field-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="EvidenceFiles">Archivos o evidencias</label>
+            <input asp-for="EvidenceFiles" type="file" multiple />
+        </div>
+
+        <div class="form-actions">
+            <a asp-controller="Dashboard" asp-action="Index" class="btn-neutral">Cancelar</a>
+            <button type="submit" class="btn-primary">Enviar Solicitud <i class="bi bi-send-fill"></i></button>
+        </div>
+    </form>
+</section>
+
+<section class="info-banner slim">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>
+        <h3>Nota</h3>
+        <p>Una vez enviada, la solicitud pasara a revision por el comite de cambios.</p>
+    </div>
+    <a href="#">Ver politicas de cambio</a>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

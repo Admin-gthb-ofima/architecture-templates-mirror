@@ -1,0 +1,86 @@
+@model change_committee.ViewModels.Applicants.ApplicantsPageViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Gestion de Solicitantes</h1>
+        <p>Administre y supervise la informacion de todos los solicitantes registrados.</p>
+    </div>
+    <a asp-action="Create" class="btn-primary"><i class="bi bi-person-plus-fill"></i> Anadir Solicitante</a>
+</section>
+
+<section class="panel mb-20">
+    <header class="panel-header compact">
+        <div class="tabs">
+            <a asp-action="Index" asp-route-filter="todos" asp-route-q="@Model.Search" class="tab @(Model.Filter == "todos" ? "active" : string.Empty)">Todos</a>
+            <a asp-action="Index" asp-route-filter="activos" asp-route-q="@Model.Search" class="tab @(Model.Filter == "activos" ? "active" : string.Empty)">Activos</a>
+            <a asp-action="Index" asp-route-filter="inactivos" asp-route-q="@Model.Search" class="tab @(Model.Filter == "inactivos" ? "active" : string.Empty)">Inactivos</a>
+        </div>
+        <div class="panel-actions">
+            <button type="button" class="btn-icon"><i class="bi bi-file-earmark-text"></i></button>
+            <button type="button" class="btn-icon"><i class="bi bi-box-arrow-up"></i></button>
+        </div>
+    </header>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Departamento</th>
+                    <th>Proyecto</th>
+                    <th>Correo Electronico</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Applicants)
+                {
+                    <tr>
+                        <td>
+                            <div class="person-cell">
+                                <span class="mini-avatar">@item.Initials</span>
+                                <strong>@item.FullName</strong>
+                            </div>
+                        </td>
+                        <td>@item.Position</td>
+                        <td>@item.Department</td>
+                        <td>@item.Project</td>
+                        <td>@item.Email</td>
+                        <td><span class="badge @(item.IsActive ? "aprobado" : "cerrado")">@(item.IsActive ? "Activo" : "Inactivo")</span></td>
+                        <td>
+                            <div class="inline-actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="icon-link" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Desea eliminar este solicitante?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="icon-link danger" title="Eliminar"><i class="bi bi-trash-fill"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="panel-footer">Mostrando @Model.Applicants.Count de @Model.Total solicitantes</footer>
+</section>
+
+<section class="kpi-grid three">
+    <article class="kpi-card soft">
+        <div class="kpi-icon sky"><i class="bi bi-people-fill"></i></div>
+        <span>Total solicitantes</span>
+        <h3>@Model.Total</h3>
+    </article>
+    <article class="kpi-card soft">
+        <div class="kpi-icon green"><i class="bi bi-person-plus-fill"></i></div>
+        <span>Altas este mes</span>
+        <h3>@Model.NewThisMonth</h3>
+    </article>
+    <article class="kpi-card soft">
+        <div class="kpi-icon purple"><i class="bi bi-clipboard2-check-fill"></i></div>
+        <span>Solicitudes pendientes</span>
+        <h3>@Model.PendingRequests</h3>
+    </article>
+</section>

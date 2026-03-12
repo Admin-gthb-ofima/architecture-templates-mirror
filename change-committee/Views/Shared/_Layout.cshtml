@@ -1,0 +1,83 @@
+@{
+    var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    string IsActive(params string[] names) => names.Any(x => x.Equals(controller, StringComparison.OrdinalIgnoreCase)) ? "is-active" : string.Empty;
+    var search = Context.Request.Query["q"].ToString();
+    var userName = User.Identity?.Name ?? "Admin Usuario";
+    var avatarLetter = string.IsNullOrWhiteSpace(userName) ? "A" : userName[..1].ToUpperInvariant();
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChangeFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="shell-body">
+    <div class="mobile-overlay" data-menu-close></div>
+    <div class="shell-grid">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-block">
+                <div class="brand-logo"><i class="bi bi-ui-radios-grid"></i></div>
+                <div>
+                    <h1>Gestion de Cambio</h1>
+                    <p>Corporativo</p>
+                </div>
+            </div>
+
+            <nav class="menu-list">
+                <a class="menu-item @IsActive("dashboard")" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-grid-fill"></i><span>Dashboard</span></a>
+                <a class="menu-item @IsActive("applicants")" asp-controller="Applicants" asp-action="Index"><i class="bi bi-people-fill"></i><span>Solicitantes</span></a>
+                <a class="menu-item @IsActive("changerequests")" asp-controller="ChangeRequests" asp-action="Index"><i class="bi bi-files"></i><span>Solicitudes</span></a>
+                <a class="menu-item @IsActive("projects")" asp-controller="Projects" asp-action="Index"><i class="bi bi-briefcase-fill"></i><span>Proyectos</span></a>
+                <a class="menu-item @IsActive("committee")" asp-controller="Committee" asp-action="Index"><i class="bi bi-person-badge-fill"></i><span>Integrantes</span></a>
+                <a class="menu-item @IsActive("settings")" asp-controller="Settings" asp-action="Index"><i class="bi bi-gear-fill"></i><span>Configuracion</span></a>
+            </nav>
+
+            <a asp-controller="ChangeRequests" asp-action="Create" class="primary-block-button"><i class="bi bi-plus-circle-fill"></i> Nueva Solicitud</a>
+        </aside>
+
+        <div class="shell-main">
+            <header class="topbar">
+                <button class="menu-toggle" type="button" data-menu-toggle><i class="bi bi-list"></i></button>
+
+                <form method="get" class="top-search" asp-controller="@ViewContext.RouteData.Values["controller"]" asp-action="Index">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="q" value="@search" placeholder="Buscar solicitud, proyecto o persona..." />
+                </form>
+
+                <div class="top-actions">
+                    <button class="icon-btn" type="button"><i class="bi bi-bell-fill"></i></button>
+                    <button class="icon-btn" type="button"><i class="bi bi-question-circle-fill"></i></button>
+                    <div class="user-chip">
+                        <div>
+                            <strong>@userName</strong>
+                            <span>Administrador</span>
+                        </div>
+                        <div class="avatar-circle">@avatarLetter</div>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="logout-btn">Salir</button>
+                    </form>
+                </div>
+            </header>
+
+            <main class="page-content">
+                @if (TempData["SuccessMessage"] is string message)
+                {
+                    <div class="alert-success">@message</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

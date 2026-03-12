@@ -1,0 +1,69 @@
+@model change_committee.ViewModels.Applicants.ApplicantFormViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Editar Solicitante</h1>
+        <p>Actualice la informacion del solicitante seleccionado.</p>
+    </div>
+</section>
+
+<section class="panel form-panel">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="crud-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="field-error"></div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="FirstName">Nombres</label>
+                <input asp-for="FirstName" />
+                <span asp-validation-for="FirstName" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="LastName">Apellidos</label>
+                <input asp-for="LastName" />
+                <span asp-validation-for="LastName" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="Email">Correo</label>
+                <input asp-for="Email" />
+                <span asp-validation-for="Email" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="Position">Cargo</label>
+                <input asp-for="Position" />
+                <span asp-validation-for="Position" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="Department">Departamento</label>
+                <input asp-for="Department" />
+                <span asp-validation-for="Department" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="Project">Proyecto</label>
+                <input asp-for="Project" />
+                <span asp-validation-for="Project" class="field-error"></span>
+            </div>
+        </div>
+
+        <label class="remember-check">
+            <input asp-for="IsActive" />
+            Solicitante activo
+        </label>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-neutral">Cancelar</a>
+            <button type="submit" class="btn-primary">Actualizar</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

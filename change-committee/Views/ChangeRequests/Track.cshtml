@@ -1,0 +1,73 @@
+@model change_committee.ViewModels.ChangeRequests.TrackChangeRequestViewModel
+@{
+    Layout = "_PortalLayout";
+}
+
+<section class="track-header">
+    <span class="eyebrow">Gestion de Cambios</span>
+    <h1>Radicado ID: #@Model.TicketNumber</h1>
+    <p>@Model.LastUpdate</p>
+    <div class="track-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-outline"><i class="bi bi-pencil-fill"></i> Editar</a>
+        <a asp-action="Index" class="btn-neutral">Volver al listado</a>
+    </div>
+</section>
+
+<section class="timeline-panel">
+    <div class="timeline-grid">
+        @foreach (var stage in Model.Stages)
+        {
+            <article class="timeline-step @stage.Status.ToLowerInvariant()">
+                <div class="dot"><i class="bi bi-check2"></i></div>
+                <h4>@stage.Name</h4>
+                <p>@stage.DateLabel</p>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="track-content">
+    <article class="panel">
+        <header class="panel-header"><h2>Detalles de la Solicitud</h2></header>
+        <div class="detail-grid">
+            <div><label>Tipo de Cambio</label><p>@Model.RequestType</p></div>
+            <div><label>Solicitante</label><p>@Model.ApplicantName</p></div>
+            <div><label>Departamento</label><p>@Model.Department</p></div>
+            <div><label>Prioridad</label><p><span class="badge @Model.Priority.ToLowerInvariant()">@Model.Priority</span></p></div>
+            <div class="wide"><label>Descripcion</label><p>@Model.Description</p></div>
+        </div>
+    </article>
+
+    <article class="panel attachment-panel">
+        <header class="panel-header"><h2>Archivos Adjuntos</h2></header>
+        <div class="attachment-list">
+            @if (Model.Attachments.Count == 0)
+            {
+                <p class="muted">Sin archivos adjuntos.</p>
+            }
+            else
+            {
+                foreach (var item in Model.Attachments)
+                {
+                    <div class="attachment-item">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                        <div>
+                            <strong>@item.FileName</strong>
+                            <span>@item.SizeLabel</span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <a href="#" class="btn-primary full">Descargar Reporte</a>
+        <a href="#" class="btn-neutral full">Contactar Soporte</a>
+    </article>
+</section>
+
+<section class="info-banner slim">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>
+        <h3>Nota de revision tecnica</h3>
+        <p>@Model.TechnicalNote</p>
+    </div>
+</section>

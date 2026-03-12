@@ -1,0 +1,78 @@
+@model change_committee.ViewModels.Committee.CommitteePageViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Integrantes del Comite de Cambios</h1>
+        <p>Administra miembros, roles estrategicos y canales oficiales para aprobacion.</p>
+    </div>
+    <a asp-action="Create" class="btn-primary"><i class="bi bi-person-plus-fill"></i> Agregar Integrante</a>
+</section>
+
+<section class="kpi-grid three">
+    <article class="kpi-card soft">
+        <div class="kpi-icon sky"><i class="bi bi-people-fill"></i></div>
+        <span>Total miembros</span>
+        <h3>@Model.TotalMembers</h3>
+    </article>
+    <article class="kpi-card soft">
+        <div class="kpi-icon green"><i class="bi bi-patch-check-fill"></i></div>
+        <span>Activos</span>
+        <h3>@Model.ActiveMembers</h3>
+    </article>
+    <article class="kpi-card soft">
+        <div class="kpi-icon amber"><i class="bi bi-hourglass-split"></i></div>
+        <span>Pendientes</span>
+        <h3>@Model.PendingMembers</h3>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Departamento</th>
+                    <th>Correo Electronico</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Members)
+                {
+                    <tr>
+                        <td>
+                            <div class="person-cell">
+                                <span class="mini-avatar">@item.Initials</span>
+                                <strong>@item.Name</strong>
+                            </div>
+                        </td>
+                        <td>@item.Role</td>
+                        <td><span class="tag">@item.Department</span></td>
+                        <td>@item.Email</td>
+                        <td>
+                            <div class="inline-actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="icon-link"><i class="bi bi-pencil-fill"></i></a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Desea eliminar este integrante?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="icon-link danger"><i class="bi bi-trash-fill"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <footer class="panel-footer">Mostrando @Model.Members.Count de @Model.TotalMembers integrantes</footer>
+</section>
+
+<section class="info-banner">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>
+        <h3>Reglas del Comite</h3>
+        <p>Para cualquier cambio critico se requiere aprobacion unanime de al menos 3 miembros.</p>
+    </div>
+    <a href="#">Ver reglamento completo</a>
+</section>

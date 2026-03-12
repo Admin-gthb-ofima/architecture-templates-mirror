@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portal de Solicitudes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="portal-body">
+    <header class="portal-topbar">
+        <a asp-controller="Dashboard" asp-action="Index" class="portal-brand">
+            <span><i class="bi bi-arrow-repeat"></i></span>
+            <strong>Change Management App</strong>
+        </a>
+        <div class="portal-actions">
+            <button class="icon-btn" type="button"><i class="bi bi-bell-fill"></i></button>
+            <button class="icon-btn" type="button"><i class="bi bi-person-circle"></i></button>
+        </div>
+    </header>
+    <main class="portal-content">
+        @if (TempData["SuccessMessage"] is string message)
+        {
+            <div class="alert-success">@message</div>
+        }
+        @RenderBody()
+    </main>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

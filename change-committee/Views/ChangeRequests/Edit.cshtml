@@ -1,0 +1,73 @@
+@model change_committee.ViewModels.ChangeRequests.EditChangeRequestViewModel
+
+<section class="page-header-row">
+    <div>
+        <h1>Editar Solicitud @Model.TicketNumber</h1>
+        <p>Actualice estado, prioridad y datos principales del radicado.</p>
+    </div>
+</section>
+
+<section class="panel form-panel">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="crud-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="field-error"></div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="ProjectId">Proyecto</label>
+                <select asp-for="ProjectId" asp-items="Model.Projects"></select>
+                <span asp-validation-for="ProjectId" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="ApplicantId">Solicitante</label>
+                <select asp-for="ApplicantId" asp-items="Model.Applicants"></select>
+                <span asp-validation-for="ApplicantId" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-two">
+            <div>
+                <label asp-for="RequestType">Tipo de solicitud</label>
+                <input asp-for="RequestType" />
+                <span asp-validation-for="RequestType" class="field-error"></span>
+            </div>
+            <div>
+                <label asp-for="Priority">Prioridad</label>
+                <select asp-for="Priority">
+                    <option value="BAJA">Baja</option>
+                    <option value="MEDIA">Media</option>
+                    <option value="ALTA">Alta</option>
+                </select>
+                <span asp-validation-for="Priority" class="field-error"></span>
+            </div>
+        </div>
+
+        <div>
+            <label asp-for="Status">Estado</label>
+            <select asp-for="Status">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_PROGRESO">En progreso</option>
+                <option value="APROBADO">Aprobado</option>
+                <option value="RECHAZADO">Rechazado</option>
+                <option value="CERRADO">Cerrado</option>
+            </select>
+            <span asp-validation-for="Status" class="field-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="Description">Descripcion</label>
+            <textarea asp-for="Description" rows="6"></textarea>
+            <span asp-validation-for="Description" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-neutral">Cancelar</a>
+            <button type="submit" class="btn-primary">Actualizar Solicitud</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
