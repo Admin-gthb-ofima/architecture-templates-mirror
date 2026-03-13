@@ -12,11 +12,18 @@ steps:
     fetchDepth: 0
 
   - script: |
+      set -euo pipefail
+
       git config --global user.email "automation@ofima.com"
       git config --global user.name "Ofima Mirror Bot"
 
-      git remote remove github || true
-      git remote add github https://dsdiaz447:$(GITHUB_PAT)@github.com/Admin-gthb-ofima/architecture-templates-mirror.git
+      GITHUB_URL="https://dsdiaz447:$(GITHUB_PAT)@github.com/Admin-gthb-ofima/architecture-templates-mirror.git"
+
+      if git remote get-url github >/dev/null 2>&1; then
+        git remote set-url github "$GITHUB_URL"
+      else
+        git remote add github "$GITHUB_URL"
+      fi
 
       git fetch origin --prune
       git push github +refs/remotes/origin/*:refs/heads/* --prune
