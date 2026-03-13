@@ -4,7 +4,7 @@ trigger:
       - "*"
 
 schedules:
-  - cron: "0 */6 * * *"
+  - cron: "0 */1 * * *"
     displayName: "Mirror cleanup every 6 hours"
     branches:
       include:
