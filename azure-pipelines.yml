@@ -1,69 +1,65 @@
-trigger:
-  branches:
-    include:
-      - "*"
+name: Auto Create Mirror PR
 
-schedules:
-  - cron: "0 */1 * * *"
-    displayName: "Mirror cleanup every 6 hours"
+on:
+  push:
     branches:
-      include:
-        - master
-    always: true
+      - 'feature/**'
+      - 'dev'
+      - 'qa'
 
-pool:
-  vmImage: ubuntu-latest
+permissions:
+  contents: read
+  pull-requests: write
 
-steps:
-  - checkout: self
-    persistCredentials: true
-    fetchDepth: 0
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
 
-  - script: |
-      set -euo pipefail
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      git config --global user.email "automation@ofima.com"
-      git config --global user.name "Ofima Mirror Bot"
+      - name: Determine base branch
+        id: base
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
 
-      GITHUB_URL="https://${GITHUB_USER}:${GITHUB_PAT}@github.com/Admin-gthb-ofima/architecture-templates-mirror.git"
-
-      if git remote get-url github >/dev/null 2>&1; then
-        git remote set-url github "$GITHUB_URL"
-      else
-        git remote add github "$GITHUB_URL"
-      fi
-
-      git fetch origin --prune
-      git fetch github --prune || true
-
-      echo "Syncing Azure branches to GitHub..."
-
-      for branch in $(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin | grep -v '^HEAD$'); do
-        echo "Syncing branch: $branch"
-        git push github "+refs/remotes/origin/$branch:refs/heads/$branch"
-      done
-
-      echo "Syncing tags..."
-      git push github --tags
-
-      echo "Checking for stale branches in GitHub..."
-
-      origin_branches=$(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin | grep -v '^HEAD$' | sort)
-      github_branches=$(git ls-remote --heads github | awk '{print $2}' | sed 's#refs/heads/##' | sort)
-
-      for branch in $github_branches; do
-        if ! echo "$origin_branches" | grep -qx "$branch"; then
-          if [ "$branch" != "master" ] && [ "$branch" != "qa" ]; then
-            echo "Deleting stale branch from GitHub: $branch"
-            git push github --delete "$branch" || true
+          if [[ "$BRANCH" == feature/* ]]; then
+            BASE="dev"
+          elif [[ "$BRANCH" == "dev" ]]; then
+            BASE="qa"
+          elif [[ "$BRANCH" == "qa" ]]; then
+            BASE="master"
           else
-            echo "Protected branch preserved: $branch"
+            exit 0
           fi
-        fi
-      done
 
-      echo "Mirror completed successfully."
-    displayName: "Mirror Azure Repos to GitHub"
-    env:
-      GITHUB_USER: $(GITHUB_USER)
-      GITHUB_PAT: $(GITHUB_PAT)
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: Check if PR already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          COUNT=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --head "${{ steps.base.outputs.branch }}" \
+            --base "${{ steps.base.outputs.base }}" \
+            --state open \
+            --json number \
+            --jq 'length')
+
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Create PR
+        if: steps.check.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --head "${{ steps.base.outputs.branch }}" \
+            --base "${{ steps.base.outputs.base }}" \
+            --title "[MIRROR] ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}" \
+            --body "PR espejo automático generado desde Azure DevOps."
