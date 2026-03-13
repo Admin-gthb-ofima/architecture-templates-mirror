@@ -1,7 +1,15 @@
 trigger:
   branches:
     include:
-      - qa
+      - "*"
+
+schedules:
+  - cron: "0 */6 * * *"
+    displayName: "Mirror cleanup every 6 hours"
+    branches:
+      include:
+        - master
+    always: true
 
 pool:
   vmImage: ubuntu-latest
@@ -26,12 +34,35 @@ steps:
       fi
 
       git fetch origin --prune
+      git fetch github --prune || true
+
+      echo "Syncing Azure branches to GitHub..."
 
       for branch in $(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin | grep -v '^HEAD$'); do
+        echo "Syncing branch: $branch"
         git push github "+refs/remotes/origin/$branch:refs/heads/$branch"
       done
 
+      echo "Syncing tags..."
       git push github --tags
+
+      echo "Checking for stale branches in GitHub..."
+
+      origin_branches=$(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin | grep -v '^HEAD$' | sort)
+      github_branches=$(git ls-remote --heads github | awk '{print $2}' | sed 's#refs/heads/##' | sort)
+
+      for branch in $github_branches; do
+        if ! echo "$origin_branches" | grep -qx "$branch"; then
+          if [ "$branch" != "master" ] && [ "$branch" != "qa" ]; then
+            echo "Deleting stale branch from GitHub: $branch"
+            git push github --delete "$branch" || true
+          else
+            echo "Protected branch preserved: $branch"
+          fi
+        fi
+      done
+
+      echo "Mirror completed successfully."
     displayName: "Mirror Azure Repos to GitHub"
     env:
       GITHUB_USER: $(GITHUB_USER)
