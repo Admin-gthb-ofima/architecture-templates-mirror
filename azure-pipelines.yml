@@ -1,65 +1,50 @@
-name: Auto Create Mirror PR
+trigger:
+  branches:
+    include:
+      - "*"
 
-on:
-  push:
+schedules:
+  - cron: "0 */6 * * *"
+    displayName: "Mirror cleanup every 6 hours"
     branches:
-      - 'feature/**'
-      - 'dev'
-      - 'qa'
+      include:
+        - master
+    always: true
 
-permissions:
-  contents: read
-  pull-requests: write
+pool:
+  vmImage: ubuntu-latest
 
-jobs:
-  create-pr:
-    runs-on: ubuntu-latest
+steps:
+  - checkout: self
+    persistCredentials: true
+    fetchDepth: 0
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  - script: |
+      set -euo pipefail
 
-      - name: Determine base branch
-        id: base
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
+      git config --global user.email "automation@ofima.com"
+      git config --global user.name "Ofima Mirror Bot"
 
-          if [[ "$BRANCH" == feature/* ]]; then
-            BASE="dev"
-          elif [[ "$BRANCH" == "dev" ]]; then
-            BASE="qa"
-          elif [[ "$BRANCH" == "qa" ]]; then
-            BASE="master"
-          else
-            exit 0
-          fi
+      GITHUB_URL="https://${GITHUB_USER}:${GITHUB_PAT}@github.com/Admin-gthb-ofima/architecture-templates-mirror.git"
 
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+      if git remote get-url github >/dev/null 2>&1; then
+        git remote set-url github "$GITHUB_URL"
+      else
+        git remote add github "$GITHUB_URL"
+      fi
 
-      - name: Check if PR already exists
-        id: check
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          COUNT=$(gh pr list \
-            --repo "${{ github.repository }}" \
-            --head "${{ steps.base.outputs.branch }}" \
-            --base "${{ steps.base.outputs.base }}" \
-            --state open \
-            --json number \
-            --jq 'length')
+      git fetch origin --prune
+      git fetch github --prune || true
 
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+      echo "Syncing Azure branches to GitHub..."
 
-      - name: Create PR
-        if: steps.check.outputs.count == '0'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr create \
-            --repo "${{ github.repository }}" \
-            --head "${{ steps.base.outputs.branch }}" \
-            --base "${{ steps.base.outputs.base }}" \
-            --title "[MIRROR] ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}" \
-            --body "PR espejo automático generado desde Azure DevOps."
+      for branch in $(git for-each-ref --format='%(refname:strip=3)' refs/remotes/origin | grep -v '^HEAD$'); do
+        echo "Syncing branch: $branch"
+        git push github "+refs/remotes/origin/$branch:refs/heads/$branch"
+      done
+
+      git push github --tags
+    displayName: "Mirror Azure Repos to GitHub"
+    env:
+      GITHUB_USER: $(GITHUB_USER)
+      GITHUB_PAT: $(GITHUB_PAT)
