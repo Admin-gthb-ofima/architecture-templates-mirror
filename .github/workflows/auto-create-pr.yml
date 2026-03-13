@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Determine base branch
         id: base
         run: |
@@ -40,6 +43,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           COUNT=$(gh pr list \
+            --repo "${{ github.repository }}" \
             --head "${{ steps.base.outputs.branch }}" \
             --base "${{ steps.base.outputs.base }}" \
             --state open \
@@ -54,6 +58,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create \
+            --repo "${{ github.repository }}" \
             --head "${{ steps.base.outputs.branch }}" \
             --base "${{ steps.base.outputs.base }}" \
             --title "[MIRROR] ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}" \
