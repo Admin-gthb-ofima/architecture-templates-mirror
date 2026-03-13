@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Domain\\Domain.csproj",
+      "projectUniqueName": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Domain\\Domain.csproj",
+      "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Domain\\Domain.csproj",
       "packagesPath": "C:\\Users\\LIDER-TECNICO\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Domain\\obj\\",
+      "outputPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

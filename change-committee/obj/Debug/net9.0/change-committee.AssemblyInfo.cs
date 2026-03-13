@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("change-committee")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9e4fc0bae3c45a422da0873d26e6d1eb0563a11")]
 [assembly: System.Reflection.AssemblyProductAttribute("change-committee")]
 [assembly: System.Reflection.AssemblyTitleAttribute("change-committee")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

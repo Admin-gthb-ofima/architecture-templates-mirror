@@ -5224,11 +5224,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\change-committee\\change-committee.csproj",
+      "projectUniqueName": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\change-committee\\change-committee.csproj",
       "projectName": "change-committee",
-      "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\change-committee\\change-committee.csproj",
+      "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\change-committee\\change-committee.csproj",
       "packagesPath": "C:\\Users\\LIDER-TECNICO\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\change-committee\\obj\\",
+      "outputPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\change-committee\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5250,11 +5250,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Application\\Application.csproj": {
-              "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Application\\Application.csproj"
+            "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Application\\Application.csproj": {
+              "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Application\\Application.csproj"
             },
-            "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Infraestructure\\Infraestructure.csproj": {
-              "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Infraestructure\\Infraestructure.csproj"
+            "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Infraestructure\\Infraestructure.csproj": {
+              "projectPath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Infraestructure\\Infraestructure.csproj"
             }
           }
         }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ix/xd8H+RYA=",
+  "dgSpecHash": "tB7T681m6Ig=",
   "success": true,
-  "projectFilePath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture templates\\Infraestructure\\Infraestructure.csproj",
+  "projectFilePath": "D:\\Projects dev\\Project Cursor 2.0\\Nueva carpeta\\Architecture-templates\\Infraestructure\\Infraestructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LIDER-TECNICO\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\LIDER-TECNICO\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

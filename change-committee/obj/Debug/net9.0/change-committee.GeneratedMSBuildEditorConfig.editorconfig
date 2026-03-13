@@ -17,97 +17,97 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = change_committee
 build_property.RootNamespace = change_committee
-build_property.ProjectDir = D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\change-committee\
+build_property.ProjectDir = D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture-templates\change-committee\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture%20templates\change-committee
+build_property.MSBuildProjectDirectory = D:\Projects dev\Project Cursor 2.0\Nueva carpeta\Architecture-templates\change-committee
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Account/Login.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Applicants/Create.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Applicants/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGljYW50c1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Applicants/Edit.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Applicants/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGljYW50c1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Applicants/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Applicants/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGljYW50c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/ChangeRequests/Create.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/ChangeRequests/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUmVxdWVzdHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/ChangeRequests/Edit.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/ChangeRequests/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUmVxdWVzdHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/ChangeRequests/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/ChangeRequests/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUmVxdWVzdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/ChangeRequests/Track.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/ChangeRequests/Track.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUmVxdWVzdHNcVHJhY2suY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Committee/Create.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Committee/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tbWl0dGVlXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Committee/Edit.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Committee/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tbWl0dGVlXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Committee/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Committee/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29tbWl0dGVlXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Dashboard/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Home/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Projects/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Projects/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Settings/Index.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Settings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGluZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Shared/_AuthLayout.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Shared/_AuthLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Shared/_Layout.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Shared/_PortalLayout.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Shared/_PortalLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Qb3J0YWxMYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/_ViewImports.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture%20templates/change-committee/Views/_ViewStart.cshtml]
+[D:/Projects dev/Project Cursor 2.0/Nueva carpeta/Architecture-templates/change-committee/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
