@@ -17,7 +17,7 @@ steps:
       git config --global user.email "automation@ofima.com"
       git config --global user.name "Ofima Mirror Bot"
 
-      GITHUB_URL="https://$(GITHUB_USER):$(GITHUB_PAT)@github.com/Admin-gthb-ofima/architecture-templates-mirror.git"
+      GITHUB_URL="https://${GITHUB_USER}:${GITHUB_PAT}@github.com/Admin-gthb-ofima/architecture-templates-mirror.git"
 
       if git remote get-url github >/dev/null 2>&1; then
         git remote set-url github "$GITHUB_URL"
@@ -33,3 +33,6 @@ steps:
 
       git push github --tags
     displayName: "Mirror Azure Repos to GitHub"
+    env:
+      GITHUB_USER: $(GITHUB_USER)
+      GITHUB_PAT: $(GITHUB_PAT)
