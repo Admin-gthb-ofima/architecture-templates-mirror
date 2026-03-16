@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "azure-devops": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@azure-devops/mcp",
+        "Ofima"
+      ],
+      "env": {
+        "AZURE_DEVOPS_EXT_PAT": "AHGjKMipjEsbuJ2biMQahPBfH8X3wKjVG9B8APjSc5GQFMxa4wMLJQQJ99CCACAAAAAh0fIaAAASAZDOMHqj"
+      }
+    }
+  }
+}
