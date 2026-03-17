@@ -6,7 +6,6 @@ on:
       - 'feature/**'
       - 'dev'
       - 'qa'
-      - 'master'
 
 permissions:
   contents: read
@@ -37,11 +36,6 @@ jobs:
             BASE="qa"
           elif [[ "$BRANCH" == "qa" ]]; then
             BASE="master"
-          elif [[ "$BRANCH" == "master" ]]; then
-            echo "master does not promote to another branch. Skipping PR creation."
-            echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-            echo "base=" >> "$GITHUB_OUTPUT"
-            exit 0
           else
             echo "Unsupported branch: $BRANCH"
             exit 0
@@ -50,19 +44,12 @@ jobs:
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "base=$BASE" >> "$GITHUB_OUTPUT"
 
-      - name: Skip PR creation for master
-        if: steps.base.outputs.branch == 'master'
-        run: |
-          echo "Skipping PR creation because master does not open PRs automatically."
-
       - name: Fetch source and base branches
-        if: steps.base.outputs.branch != 'master'
         run: |
           git fetch origin "${{ steps.base.outputs.branch }}" "${{ steps.base.outputs.base }}"
 
       - name: Check if there are commits to promote
         id: diff
-        if: steps.base.outputs.branch != 'master'
         run: |
           COUNT=$(git rev-list --count "origin/${{ steps.base.outputs.base }}..origin/${{ steps.base.outputs.branch }}")
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
@@ -73,7 +60,7 @@ jobs:
 
       - name: Check if PR already exists
         id: check
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0'
+        if: steps.diff.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -88,7 +75,7 @@ jobs:
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
       - name: Create PR
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count == '0'
+        if: steps.diff.outputs.count != '0' && steps.check.outputs.count == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -100,11 +87,11 @@ jobs:
             --body "PR espejo automático generado desde Azure DevOps."
 
       - name: Skip because there are no changes
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count == '0'
+        if: steps.diff.outputs.count == '0'
         run: |
           echo "Skipping PR creation because there are no commits to promote."
 
       - name: Skip because PR already exists
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count != '0'
+        if: steps.diff.outputs.count != '0' && steps.check.outputs.count != '0'
         run: |
           echo "A PR already exists for ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}."
