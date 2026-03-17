@@ -6,7 +6,6 @@ on:
       - 'feature/**'
       - 'dev'
       - 'qa'
-      - 'master'
 
 permissions:
   contents: read
@@ -17,15 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Mark workspace as safe
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
       - name: Determine base branch
         id: base
         run: |
@@ -37,48 +27,19 @@ jobs:
             BASE="qa"
           elif [[ "$BRANCH" == "qa" ]]; then
             BASE="master"
-          elif [[ "$BRANCH" == "master" ]]; then
-            echo "master does not promote to another branch. Skipping PR creation."
-            echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-            echo "base=" >> "$GITHUB_OUTPUT"
-            exit 0
           else
-            echo "Unsupported branch: $BRANCH"
             exit 0
           fi
 
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "base=$BASE" >> "$GITHUB_OUTPUT"
 
-      - name: Skip PR creation for master
-        if: steps.base.outputs.branch == 'master'
-        run: |
-          echo "Skipping PR creation because master does not open PRs automatically."
-
-      - name: Fetch source and base branches
-        if: steps.base.outputs.branch != 'master'
-        run: |
-          git fetch origin "${{ steps.base.outputs.branch }}" "${{ steps.base.outputs.base }}"
-
-      - name: Check if there are commits to promote
-        id: diff
-        if: steps.base.outputs.branch != 'master'
-        run: |
-          COUNT=$(git rev-list --count "origin/${{ steps.base.outputs.base }}..origin/${{ steps.base.outputs.branch }}")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-
-          if [ "$COUNT" -eq 0 ]; then
-            echo "No commits between ${{ steps.base.outputs.branch }} and ${{ steps.base.outputs.base }}."
-          fi
-
       - name: Check if PR already exists
         id: check
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           COUNT=$(gh pr list \
-            --repo "${{ github.repository }}" \
             --head "${{ steps.base.outputs.branch }}" \
             --base "${{ steps.base.outputs.base }}" \
             --state open \
@@ -88,23 +49,12 @@ jobs:
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
       - name: Create PR
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count == '0'
+        if: steps.check.outputs.count == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create \
-            --repo "${{ github.repository }}" \
             --head "${{ steps.base.outputs.branch }}" \
             --base "${{ steps.base.outputs.base }}" \
             --title "[MIRROR] ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}" \
             --body "PR espejo automático generado desde Azure DevOps."
-
-      - name: Skip because there are no changes
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count == '0'
-        run: |
-          echo "Skipping PR creation because there are no commits to promote."
-
-      - name: Skip because PR already exists
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count != '0'
-        run: |
-          echo "A PR already exists for ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}."
