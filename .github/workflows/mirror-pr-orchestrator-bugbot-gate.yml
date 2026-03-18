@@ -1,9 +1,11 @@
-name: Auto Create Mirror PR - dev to qa with Bugbot gate
+name: mirror-pr-orchestrator-bugbot-gate
 
 on:
   push:
     branches:
+      - 'feature/**'
       - 'dev'
+      - 'qa'
 
 permissions:
   contents: write
@@ -13,12 +15,35 @@ permissions:
   issues: read
 
 jobs:
-  create-pr-and-wait-bugbot:
+  create-pr-wait-bugbot-and-merge:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Resolve source and target branches
+        id: branch_map
+        run: |
+          SOURCE_BRANCH="${GITHUB_REF_NAME}"
+          TARGET_BRANCH=""
+
+          if [[ "$SOURCE_BRANCH" == feature/* ]]; then
+            TARGET_BRANCH="dev"
+          elif [[ "$SOURCE_BRANCH" == "dev" ]]; then
+            TARGET_BRANCH="qa"
+          elif [[ "$SOURCE_BRANCH" == "qa" ]]; then
+            TARGET_BRANCH="master"
+          else
+            echo "Rama no soportada: $SOURCE_BRANCH"
+            exit 1
+          fi
+
+          echo "source_branch=$SOURCE_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "target_branch=$TARGET_BRANCH" >> "$GITHUB_OUTPUT"
+
+          echo "SOURCE_BRANCH=$SOURCE_BRANCH"
+          echo "TARGET_BRANCH=$TARGET_BRANCH"
 
       - name: Authenticate GitHub CLI
         env:
@@ -29,11 +54,13 @@ jobs:
         id: existing_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_BRANCH: ${{ steps.branch_map.outputs.source_branch }}
+          TARGET_BRANCH: ${{ steps.branch_map.outputs.target_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "dev" \
-            --base "qa" \
+            --head "$SOURCE_BRANCH" \
+            --base "$TARGET_BRANCH" \
             --state open \
             --json number \
             --jq '.[0].number')
@@ -44,29 +71,33 @@ jobs:
         if: steps.existing_pr.outputs.pr_number == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_BRANCH: ${{ steps.branch_map.outputs.source_branch }}
+          TARGET_BRANCH: ${{ steps.branch_map.outputs.target_branch }}
         run: |
           gh pr create \
             --repo "${{ github.repository }}" \
-            --head "dev" \
-            --base "qa" \
-            --title "[MIRROR] dev -> qa" \
+            --head "$SOURCE_BRANCH" \
+            --base "$TARGET_BRANCH" \
+            --title "[MIRROR] $SOURCE_BRANCH -> $TARGET_BRANCH" \
             --body "PR espejo automático generado desde Azure DevOps. Esperando revisión de Bugbot antes del merge."
 
       - name: Resolve PR number
         id: pr_data
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_BRANCH: ${{ steps.branch_map.outputs.source_branch }}
+          TARGET_BRANCH: ${{ steps.branch_map.outputs.target_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "dev" \
-            --base "qa" \
+            --head "$SOURCE_BRANCH" \
+            --base "$TARGET_BRANCH" \
             --state open \
             --json number \
             --jq '.[0].number')
 
           if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
-            echo "No se encontró una PR abierta dev -> qa"
+            echo "No se encontró una PR abierta $SOURCE_BRANCH -> $TARGET_BRANCH"
             exit 1
           fi
 
