@@ -1,9 +1,9 @@
-name: Auto Create Mirror PR - feature to dev with Bugbot gate
+name: Auto Create Mirror PR - dev to qa with Bugbot gate
 
 on:
   push:
     branches:
-      - 'feature/**'
+      - 'dev'
 
 permissions:
   contents: write
@@ -20,12 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set source branch
-        id: branch_data
-        run: |
-          BRANCH_NAME="${GITHUB_REF_NAME}"
-          echo "source_branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
-
       - name: Authenticate GitHub CLI
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,12 +29,11 @@ jobs:
         id: existing_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
+            --head "dev" \
+            --base "qa" \
             --state open \
             --json number \
             --jq '.[0].number')
@@ -51,31 +44,29 @@ jobs:
         if: steps.existing_pr.outputs.pr_number == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
-            --title "[MIRROR] $SOURCE_BRANCH -> dev" \
+            --head "dev" \
+            --base "qa" \
+            --title "[MIRROR] dev -> qa" \
             --body "PR espejo automático generado desde Azure DevOps. Esperando revisión de Bugbot antes del merge."
 
       - name: Resolve PR number
         id: pr_data
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
+            --head "dev" \
+            --base "qa" \
             --state open \
             --json number \
             --jq '.[0].number')
 
           if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
-            echo "No se encontró una PR abierta $SOURCE_BRANCH -> dev"
+            echo "No se encontró una PR abierta dev -> qa"
             exit 1
           fi
 
