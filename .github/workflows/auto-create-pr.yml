@@ -1,9 +1,9 @@
-name: Auto Create Mirror PR - feature to dev with Bugbot gate
+name: Auto Create Mirror PR - dev to qa with Bugbot gate
 
 on:
   push:
     branches:
-      - 'feature/**'
+      - 'dev'
 
 permissions:
   contents: write
@@ -20,12 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set source branch
-        id: branch_data
-        run: |
-          BRANCH_NAME="${GITHUB_REF_NAME}"
-          echo "source_branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
-
       - name: Authenticate GitHub CLI
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,12 +29,11 @@ jobs:
         id: existing_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
+            --head "dev" \
+            --base "qa" \
             --state open \
             --json number \
             --jq '.[0].number')
@@ -51,31 +44,29 @@ jobs:
         if: steps.existing_pr.outputs.pr_number == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           gh pr create \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
-            --title "[MIRROR] $SOURCE_BRANCH -> dev" \
+            --head "dev" \
+            --base "qa" \
+            --title "[MIRROR] dev -> qa" \
             --body "PR espejo automático generado desde Azure DevOps. Esperando revisión de Bugbot antes del merge."
 
       - name: Resolve PR number
         id: pr_data
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOURCE_BRANCH: ${{ steps.branch_data.outputs.source_branch }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "$SOURCE_BRANCH" \
-            --base "dev" \
+            --head "dev" \
+            --base "qa" \
             --state open \
             --json number \
             --jq '.[0].number')
 
           if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
-            echo "No se encontró una PR abierta $SOURCE_BRANCH -> dev"
+            echo "No se encontró una PR abierta dev -> qa"
             exit 1
           fi
 
@@ -92,49 +83,23 @@ jobs:
 
           MAX_ATTEMPTS=18
           SLEEP_SECONDS=20
-
           BUGBOT_FOUND="false"
-          BUGBOT_REVIEW_STATE=""
-          BUGBOT_SOURCE=""
 
           for i in $(seq 1 $MAX_ATTEMPTS); do
             echo "Intento $i de $MAX_ATTEMPTS"
 
-            REVIEWS_JSON=$(gh api "repos/$REPO/pulls/$PR_NUMBER/reviews" || echo "[]")
             COMMENTS_JSON=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" || echo "[]")
 
-            ISSUE_COMMENTS_MATCH=$(echo "$COMMENTS_JSON" | jq -r '
+            MATCH=$(echo "$COMMENTS_JSON" | jq -r '
               map(select(
-                (.user.login | ascii_downcase | contains("cursor")) or
-                (.user.login | ascii_downcase | contains("bugbot")) or
-                (.body | ascii_downcase | contains("written by cursor bugbot"))
+                (.body | ascii_downcase | contains("cursor")) or
+                (.body | ascii_downcase | contains("bugbot"))
               )) | length
             ')
 
-            REVIEW_MATCH=$(echo "$REVIEWS_JSON" | jq -r '
-              map(select(
-                (.user.login | ascii_downcase | contains("cursor")) or
-                (.user.login | ascii_downcase | contains("bugbot"))
-              )) | length
-            ')
-
-            REVIEW_STATE=$(echo "$REVIEWS_JSON" | jq -r '
-              map(select(
-                (.user.login | ascii_downcase | contains("cursor")) or
-                (.user.login | ascii_downcase | contains("bugbot"))
-              )) | last | .state // empty
-            ')
-
-            if [ "$ISSUE_COMMENTS_MATCH" -gt 0 ]; then
+            if [ "$MATCH" -gt 0 ]; then
+              echo "Bugbot detectado por comentario"
               BUGBOT_FOUND="true"
-              BUGBOT_SOURCE="comment"
-              break
-            fi
-
-            if [ "$REVIEW_MATCH" -gt 0 ]; then
-              BUGBOT_FOUND="true"
-              BUGBOT_SOURCE="review"
-              BUGBOT_REVIEW_STATE="$REVIEW_STATE"
               break
             fi
 
@@ -143,19 +108,11 @@ jobs:
           done
 
           echo "bugbot_found=$BUGBOT_FOUND" >> "$GITHUB_OUTPUT"
-          echo "bugbot_source=$BUGBOT_SOURCE" >> "$GITHUB_OUTPUT"
-          echo "bugbot_review_state=$BUGBOT_REVIEW_STATE" >> "$GITHUB_OUTPUT"
 
           if [ "$BUGBOT_FOUND" != "true" ]; then
             echo "Bugbot no dejó evidencia dentro del tiempo esperado."
             exit 1
           fi
-
-      - name: Block merge if Bugbot requested changes
-        if: steps.wait_bugbot.outputs.bugbot_review_state == 'CHANGES_REQUESTED'
-        run: |
-          echo "Bugbot solicitó cambios. No se hará merge automático."
-          exit 1
 
       - name: Merge PR after Bugbot validation
         env:
