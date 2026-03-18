@@ -1,110 +1,159 @@
-name: Auto Create Mirror PR
+name: Auto Create Mirror PR - qa to master with Bugbot gate
 
 on:
   push:
     branches:
-      - 'feature/**'
-      - 'dev'
       - 'qa'
-      - 'master'
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  checks: read
+  statuses: read
+  issues: read
 
 jobs:
-  create-pr:
+  create-pr-and-wait-bugbot:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Mark workspace as safe
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Determine base branch
-        id: base
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
-
-          if [[ "$BRANCH" == feature/* ]]; then
-            BASE="dev"
-          elif [[ "$BRANCH" == "dev" ]]; then
-            BASE="qa"
-          elif [[ "$BRANCH" == "qa" ]]; then
-            BASE="master"
-          elif [[ "$BRANCH" == "master" ]]; then
-            echo "master does not promote to another branch. Skipping PR creation."
-            echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-            echo "base=" >> "$GITHUB_OUTPUT"
-            exit 0
-          else
-            echo "Unsupported branch: $BRANCH"
-            exit 0
-          fi
-
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-          echo "base=$BASE" >> "$GITHUB_OUTPUT"
-
-      - name: Skip PR creation for master
-        if: steps.base.outputs.branch == 'master'
-        run: |
-          echo "Skipping PR creation because master does not open PRs automatically."
-
-      - name: Fetch source and base branches
-        if: steps.base.outputs.branch != 'master'
-        run: |
-          git fetch origin "${{ steps.base.outputs.branch }}" "${{ steps.base.outputs.base }}"
-
-      - name: Check if there are commits to promote
-        id: diff
-        if: steps.base.outputs.branch != 'master'
-        run: |
-          COUNT=$(git rev-list --count "origin/${{ steps.base.outputs.base }}..origin/${{ steps.base.outputs.branch }}")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-
-          if [ "$COUNT" -eq 0 ]; then
-            echo "No commits between ${{ steps.base.outputs.branch }} and ${{ steps.base.outputs.base }}."
-          fi
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth status
 
       - name: Check if PR already exists
-        id: check
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0'
+        id: existing_pr
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          COUNT=$(gh pr list \
+          PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --head "${{ steps.base.outputs.branch }}" \
-            --base "${{ steps.base.outputs.base }}" \
+            --head "qa" \
+            --base "master" \
             --state open \
             --json number \
-            --jq 'length')
+            --jq '.[0].number')
 
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
-      - name: Create PR
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count == '0'
+      - name: Create PR if it does not exist
+        if: steps.existing_pr.outputs.pr_number == ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --repo "${{ github.repository }}" \
-            --head "${{ steps.base.outputs.branch }}" \
-            --base "${{ steps.base.outputs.base }}" \
-            --title "[MIRROR] ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}" \
-            --body "PR espejo automático generado desde Azure DevOps."
+            --head "qa" \
+            --base "master" \
+            --title "[MIRROR] qa -> master" \
+            --body "PR espejo automático generado desde Azure DevOps. Esperando revisión de Bugbot antes del merge."
 
-      - name: Skip because there are no changes
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count == '0'
+      - name: Resolve PR number
+        id: pr_data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Skipping PR creation because there are no commits to promote."
+          PR_NUMBER=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --head "qa" \
+            --base "master" \
+            --state open \
+            --json number \
+            --jq '.[0].number')
 
-      - name: Skip because PR already exists
-        if: steps.base.outputs.branch != 'master' && steps.diff.outputs.count != '0' && steps.check.outputs.count != '0'
+          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
+            echo "No se encontró una PR abierta qa -> master"
+            exit 1
+          fi
+
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Bugbot evidence
+        id: wait_bugbot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr_data.outputs.pr_number }}
+          REPO: ${{ github.repository }}
         run: |
-          echo "A PR already exists for ${{ steps.base.outputs.branch }} -> ${{ steps.base.outputs.base }}."
+          echo "Esperando evidencia de Bugbot en PR #$PR_NUMBER"
+
+          MAX_ATTEMPTS=18
+          SLEEP_SECONDS=20
+
+          BUGBOT_FOUND="false"
+          BUGBOT_REVIEW_STATE=""
+          BUGBOT_SOURCE=""
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Intento $i de $MAX_ATTEMPTS"
+
+            REVIEWS_JSON=$(gh api "repos/$REPO/pulls/$PR_NUMBER/reviews" || echo "[]")
+            COMMENTS_JSON=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" || echo "[]")
+
+            ISSUE_COMMENTS_MATCH=$(echo "$COMMENTS_JSON" | jq -r '
+              map(select(
+                (.user.login | ascii_downcase | contains("cursor")) or
+                (.user.login | ascii_downcase | contains("bugbot")) or
+                (.body | ascii_downcase | contains("written by cursor bugbot"))
+              )) | length
+            ')
+
+            REVIEW_MATCH=$(echo "$REVIEWS_JSON" | jq -r '
+              map(select(
+                (.user.login | ascii_downcase | contains("cursor")) or
+                (.user.login | ascii_downcase | contains("bugbot"))
+              )) | length
+            ')
+
+            REVIEW_STATE=$(echo "$REVIEWS_JSON" | jq -r '
+              map(select(
+                (.user.login | ascii_downcase | contains("cursor")) or
+                (.user.login | ascii_downcase | contains("bugbot"))
+              )) | last | .state // empty
+            ')
+
+            if [ "$ISSUE_COMMENTS_MATCH" -gt 0 ]; then
+              BUGBOT_FOUND="true"
+              BUGBOT_SOURCE="comment"
+              break
+            fi
+
+            if [ "$REVIEW_MATCH" -gt 0 ]; then
+              BUGBOT_FOUND="true"
+              BUGBOT_SOURCE="review"
+              BUGBOT_REVIEW_STATE="$REVIEW_STATE"
+              break
+            fi
+
+            echo "Bugbot aún no aparece. Esperando $SLEEP_SECONDS segundos..."
+            sleep "$SLEEP_SECONDS"
+          done
+
+          echo "bugbot_found=$BUGBOT_FOUND" >> "$GITHUB_OUTPUT"
+          echo "bugbot_source=$BUGBOT_SOURCE" >> "$GITHUB_OUTPUT"
+          echo "bugbot_review_state=$BUGBOT_REVIEW_STATE" >> "$GITHUB_OUTPUT"
+
+          if [ "$BUGBOT_FOUND" != "true" ]; then
+            echo "Bugbot no dejó evidencia dentro del tiempo esperado."
+            exit 1
+          fi
+
+      - name: Block merge if Bugbot requested changes
+        if: steps.wait_bugbot.outputs.bugbot_review_state == 'CHANGES_REQUESTED'
+        run: |
+          echo "Bugbot solicitó cambios. No se hará merge automático."
+          exit 1
+
+      - name: Merge PR after Bugbot validation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr_data.outputs.pr_number }}
+        run: |
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --merge \
+            --delete-branch=false
