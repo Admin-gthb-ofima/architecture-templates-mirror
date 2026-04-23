@@ -1,0 +1,95 @@
+name: mirror-bugbot-gate-and-merge
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  wait-bugbot-and-merge:
+    if: |
+      startsWith(github.event.pull_request.title, '[MIRROR]') &&
+      github.event.pull_request.state == 'open'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth status
+
+      - name: Validate allowed mirror flow
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          VALID="false"
+
+          if [[ "$HEAD_REF" == feature/* && "$BASE_REF" == "dev" ]]; then
+            VALID="true"
+          elif [[ "$HEAD_REF" == "dev" && "$BASE_REF" == "qa" ]]; then
+            VALID="true"
+          elif [[ "$HEAD_REF" == "qa" && "$BASE_REF" == "master" ]]; then
+            VALID="true"
+          fi
+
+          if [[ "$VALID" != "true" ]]; then
+            echo "Flujo no permitido: $HEAD_REF -> $BASE_REF"
+            exit 1
+          fi
+
+      - name: Wait for Bugbot evidence
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Esperando evidencia de Bugbot en PR #$PR_NUMBER"
+
+          MAX_ATTEMPTS=30
+          SLEEP_SECONDS=20
+          BUGBOT_FOUND="false"
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Intento $i de $MAX_ATTEMPTS"
+
+            COMMENTS_JSON=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" || echo "[]")
+
+            MATCH=$(echo "$COMMENTS_JSON" | jq -r '
+              map(select(
+                (.body | ascii_downcase | contains("cursor")) or
+                (.body | ascii_downcase | contains("bugbot"))
+              )) | length
+            ')
+
+            if [ "$MATCH" -gt 0 ]; then
+              echo "Bugbot detectado por comentario"
+              BUGBOT_FOUND="true"
+              break
+            fi
+
+            echo "Bugbot aún no aparece. Esperando $SLEEP_SECONDS segundos..."
+            sleep "$SLEEP_SECONDS"
+          done
+
+          if [ "$BUGBOT_FOUND" != "true" ]; then
+            echo "Bugbot no dejó evidencia dentro del tiempo esperado."
+            exit 1
+          fi
+
+      - name: Merge PR after Bugbot validation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --merge \
+            --delete-branch=false
